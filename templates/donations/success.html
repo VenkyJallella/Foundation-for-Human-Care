@@ -11,7 +11,7 @@
           <p class="lead text-muted">Your donation of <strong>₹{{ donation.amount }}</strong> was successful.</p>
           <p class="text-muted">Receipt no: <strong>{{ donation.receipt_no }}</strong></p>
           <div class="mt-4 d-flex justify-content-center gap-2">
-            <a href="{% url 'donations:receipt' donation.pk %}" class="btn btn-success" target="_blank"><i class="fas fa-file-invoice me-2"></i>View Receipt</a>
+            <a href="{% url 'donations:receipt' donation.token %}" class="btn btn-success" target="_blank"><i class="fas fa-file-invoice me-2"></i>View Receipt</a>
             {% if user.is_authenticated %}<a href="{% url 'accounts:my_donations' %}" class="btn btn-outline-success">My Donations</a>{% endif %}
             <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">Back Home</a>
           </div>

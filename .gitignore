@@ -15,6 +15,9 @@ db.sqlite3-journal
 # Env / secrets
 .env
 
+# Data dumps (may contain personal data / password hashes)
+data.json
+
 # OS / editor
 .DS_Store
 Thumbs.db

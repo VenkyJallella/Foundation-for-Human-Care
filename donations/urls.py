@@ -8,6 +8,6 @@ urlpatterns = [
     path("", views.donate, name="donate"),
     path("callback/", views.payment_callback, name="callback"),
     path("webhook/", views.webhook, name="webhook"),
-    path("success/<int:pk>/", views.success, name="success"),
-    path("receipt/<int:pk>/", views.receipt, name="receipt"),
+    path("success/<uuid:token>/", views.success, name="success"),
+    path("receipt/<uuid:token>/", views.receipt, name="receipt"),
 ]

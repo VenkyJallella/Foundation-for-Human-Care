@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect, render
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from .forms import ContactForm, NewsletterForm
 
@@ -73,4 +74,10 @@ def newsletter_subscribe(request):
             messages.error(
                 request, form.errors.get("email", ["Invalid email."])[0]
             )
-    return redirect(request.META.get("HTTP_REFERER", "core:home"))
+    # Return to the page the visitor came from, but only if it's our own site.
+    referer = request.META.get("HTTP_REFERER", "")
+    if referer and url_has_allowed_host_and_scheme(
+        referer, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+    ):
+        return redirect(referer)
+    return redirect("core:home")

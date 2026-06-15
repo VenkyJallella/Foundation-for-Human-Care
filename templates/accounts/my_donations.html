@@ -15,7 +15,7 @@
               <td>{{ d.program|default:"General fund" }}</td>
               <td>₹{{ d.amount }}</td>
               <td><span class="badge badge-soft-{% if d.status == 'paid' %}success{% elif d.status == 'failed' %}danger{% else %}warning{% endif %}">{{ d.get_status_display }}</span></td>
-              <td>{% if d.status == 'paid' %}<a href="{% url 'donations:receipt' d.pk %}" class="btn btn-sm btn-outline-success" target="_blank"><i class="fas fa-file-invoice"></i> Receipt</a>{% endif %}</td>
+              <td>{% if d.status == 'paid' %}<a href="{% url 'donations:receipt' d.token %}" class="btn btn-sm btn-outline-success" target="_blank"><i class="fas fa-file-invoice"></i> Receipt</a>{% endif %}</td>
             </tr>
           {% endfor %}
         </tbody>

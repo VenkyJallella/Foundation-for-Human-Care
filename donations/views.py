@@ -50,7 +50,7 @@ def donate(request):
                     "Online payments are not configured yet. Your pledge has been "
                     "recorded and our team will contact you with payment details.",
                 )
-                return redirect("donations:success", pk=donation.pk)
+                return redirect("donations:success", token=donation.token)
 
             donation.razorpay_order_id = order["id"]
             donation.save(update_fields=["razorpay_order_id"])
@@ -99,7 +99,7 @@ def payment_callback(request):
 
     _mark_paid(donation, payment_id, signature)
     messages.success(request, "Thank you! Your donation was successful.")
-    return redirect("donations:success", pk=donation.pk)
+    return redirect("donations:success", token=donation.token)
 
 
 def _mark_paid(donation, payment_id="", signature=""):
@@ -117,16 +117,14 @@ def _mark_paid(donation, payment_id="", signature=""):
         )
 
 
-def success(request, pk):
-    donation = get_object_or_404(Donation, pk=pk)
+def success(request, token):
+    donation = get_object_or_404(Donation, token=token)
     return render(request, "donations/success.html", {"donation": donation})
 
 
-def receipt(request, pk):
-    donation = get_object_or_404(Donation, pk=pk)
-    # Only the owner (or staff) can view a receipt for a paid donation.
-    if donation.user and request.user != donation.user and not request.user.is_staff:
-        return HttpResponseBadRequest("Not allowed")
+def receipt(request, token):
+    # The unguessable token in the URL is the access capability.
+    donation = get_object_or_404(Donation, token=token)
     return render(request, "donations/receipt.html", {"donation": donation})
 
 

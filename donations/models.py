@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.db import models
 
@@ -7,6 +9,9 @@ class Donation(models.Model):
         CREATED = "created", "Created"
         PAID = "paid", "Paid"
         FAILED = "failed", "Failed"
+
+    # Unguessable public identifier used in success/receipt URLs.
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, db_index=True)
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
