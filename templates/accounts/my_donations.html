@@ -1,0 +1,28 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}My Donations — {{ org.org_name }}{% endblock %}
+{% block dashboard %}
+<h3 class="mb-4">My Donations</h3>
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    {% if donations %}
+      <table class="table mb-0 align-middle">
+        <thead><tr><th>Receipt</th><th>Date</th><th>Program</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          {% for d in donations %}
+            <tr>
+              <td class="small text-muted">{{ d.receipt_no }}</td>
+              <td>{{ d.created|date:"d M Y" }}</td>
+              <td>{{ d.program|default:"General fund" }}</td>
+              <td>₹{{ d.amount }}</td>
+              <td><span class="badge badge-soft-{% if d.status == 'paid' %}success{% elif d.status == 'failed' %}danger{% else %}warning{% endif %}">{{ d.get_status_display }}</span></td>
+              <td>{% if d.status == 'paid' %}<a href="{% url 'donations:receipt' d.pk %}" class="btn btn-sm btn-outline-success" target="_blank"><i class="fas fa-file-invoice"></i> Receipt</a>{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="p-4 text-center text-muted">No donations yet. <a href="{% url 'donations:donate' %}">Make your first donation</a>.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

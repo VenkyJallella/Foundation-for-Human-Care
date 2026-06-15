@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Donate — {{ org.org_name }}{% endblock %}
+{% block content %}
+{% include "partials/page_header.html" with title="Make a Donation" subtitle="Your generosity changes lives" %}
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <div class="card shadow-sm p-4">
+          <form method="post" id="donateForm">
+            {% csrf_token %}
+
+            <label class="form-label fw-semibold">Choose an amount (₹)</label>
+            <div class="d-flex flex-wrap gap-2 mb-3" id="presetBtns">
+              {% for amt in presets %}
+                <button type="button" class="btn btn-outline-success preset-amt" data-amt="{{ amt }}">₹{{ amt }}</button>
+              {% endfor %}
+            </div>
+
+            {{ form|crispy }}
+
+            <button type="submit" class="btn btn-success btn-lg w-100 mt-2"><i class="fas fa-heart me-2"></i>Proceed to Pay</button>
+          </form>
+        </div>
+
+        {% if org.bank_details %}
+          <div class="card shadow-sm p-4 mt-4">
+            <h6><i class="fas fa-building-columns text-success me-2"></i>Prefer a bank transfer / UPI?</h6>
+            <p class="text-muted small mb-0" style="white-space: pre-line;">{{ org.bank_details }}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Clicking a preset fills the amount field.
+  const amountInput = document.querySelector('#id_amount');
+  document.querySelectorAll('.preset-amt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (amountInput) amountInput.value = btn.dataset.amt;
+      document.querySelectorAll('.preset-amt').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+{% endblock %}

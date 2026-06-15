@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ program.title }} — {{ org.org_name }}{% endblock %}
+{% block content %}
+{% include "partials/page_header.html" with title=program.title subtitle=program.summary %}
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        {% if program.image %}<img src="{{ program.image.url }}" class="img-fluid rounded-4 shadow-sm mb-4" alt="{{ program.title }}">{% endif %}
+        <div style="white-space: pre-line;">{{ program.body }}</div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card shadow-sm p-4 sticky-lg-top" style="top: 90px;">
+          {% if program.goal_amount %}
+            <h6>Fundraising progress</h6>
+            <div class="progress goal-progress mb-2"><div class="progress-bar bg-success" style="width: {{ program.progress_percent }}%"></div></div>
+            <p class="small text-muted">₹{{ program.raised_amount }} raised of ₹{{ program.goal_amount }} goal</p>
+          {% endif %}
+          <a href="{% url 'donations:donate' %}?program={{ program.slug }}" class="btn btn-success w-100"><i class="fas fa-heart me-2"></i>Donate to this cause</a>
+        </div>
+      </div>
+    </div>
+
+    {% if others %}
+      <hr class="my-5">
+      <h4 class="mb-4">Other programs</h4>
+      <div class="row g-4">
+        {% for p in others %}
+          <div class="col-md-4">
+            <div class="card hover-lift h-100 shadow-sm">
+              {% if p.image %}<img src="{{ p.image.url }}" class="card-img-top" alt="">{% endif %}
+              <div class="card-body">
+                <h6 class="card-title">{{ p.title }}</h6>
+                <a href="{{ p.get_absolute_url }}" class="stretched-link small text-success">View →</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

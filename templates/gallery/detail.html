@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ album.title }} — {{ org.org_name }}{% endblock %}
+{% block content %}
+{% include "partials/page_header.html" with title=album.title subtitle=album.description %}
+<section class="section">
+  <div class="container">
+    <a href="{% url 'gallery:list' %}" class="btn btn-sm btn-outline-secondary mb-4"><i class="fas fa-arrow-left me-1"></i>All albums</a>
+    {% if album.photos.all %}
+      <div class="row g-3">
+        {% for photo in album.photos.all %}
+          <div class="col-6 col-md-4 col-lg-3">
+            <img src="{{ photo.image.url }}" class="gallery-thumb" alt="{{ photo.caption }}"
+                 data-bs-toggle="modal" data-bs-target="#photoModal"
+                 data-img="{{ photo.image.url }}" data-caption="{{ photo.caption }}">
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-muted">No photos in this album yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Lightbox modal -->
+<div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content bg-dark">
+      <div class="modal-body text-center p-0">
+        <img src="" id="modalImg" class="img-fluid" alt="">
+        <p id="modalCaption" class="text-white-50 small py-2 mb-0"></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const photoModal = document.getElementById('photoModal');
+  photoModal.addEventListener('show.bs.modal', function (event) {
+    const trigger = event.relatedTarget;
+    document.getElementById('modalImg').src = trigger.getAttribute('data-img');
+    document.getElementById('modalCaption').textContent = trigger.getAttribute('data-caption');
+  });
+</script>
+{% endblock %}

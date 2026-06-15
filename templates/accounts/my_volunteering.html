@@ -1,0 +1,25 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}My Volunteering — {{ org.org_name }}{% endblock %}
+{% block dashboard %}
+<h3 class="mb-4">My Volunteering</h3>
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    {% if applications %}
+      <table class="table mb-0 align-middle">
+        <thead><tr><th>Opportunity</th><th>Applied on</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for a in applications %}
+            <tr>
+              <td><a href="{{ a.opportunity.get_absolute_url }}">{{ a.opportunity.title }}</a></td>
+              <td>{{ a.created|date:"d M Y" }}</td>
+              <td><span class="badge badge-soft-{% if a.status == 'approved' %}success{% elif a.status == 'rejected' %}danger{% else %}warning{% endif %}">{{ a.get_status_display }}</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="p-4 text-center text-muted">You haven't applied to volunteer yet. <a href="{% url 'volunteers:list' %}">See opportunities</a>.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Gallery — {{ org.org_name }}{% endblock %}
+{% block content %}
+{% include "partials/page_header.html" with title="Photo Gallery" subtitle="Moments from our work" %}
+<section class="section">
+  <div class="container">
+    {% if albums %}
+      <div class="row g-4">
+        {% for album in albums %}
+          <div class="col-md-6 col-lg-4">
+            <div class="card hover-lift h-100 shadow-sm">
+              {% if album.cover_image %}<img src="{{ album.cover_image.url }}" class="album-cover" alt="{{ album.title }}">
+              {% else %}<img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=700&q=80" class="album-cover" alt="">{% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ album.title }}</h5>
+                <p class="card-text text-muted small">{{ album.description|truncatewords:14 }}</p>
+                <a href="{{ album.get_absolute_url }}" class="stretched-link small text-success">{{ album.photos.count }} photos →</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-muted">No albums yet. Check back soon!</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

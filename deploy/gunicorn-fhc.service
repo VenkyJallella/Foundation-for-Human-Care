@@ -1,0 +1,16 @@
+[Unit]
+Description=Gunicorn (Foundation for Human Care)
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/fhc
+ExecStart=/var/www/fhc/.venv/bin/gunicorn fhc.wsgi:application \
+    --workers 3 \
+    --bind 127.0.0.1:8001
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

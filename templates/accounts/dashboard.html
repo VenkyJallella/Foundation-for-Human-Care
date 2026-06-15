@@ -1,0 +1,52 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Dashboard — {{ org.org_name }}{% endblock %}
+{% block dashboard %}
+<h3 class="mb-4">Welcome, {{ user.first_name|default:"friend" }}!</h3>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="dash-stat" style="background:linear-gradient(120deg,#198754,#146c43);">
+      <div class="small text-white-50">Total Donated</div>
+      <div class="fs-3 fw-bold">₹{{ total_donated }}</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="dash-stat" style="background:linear-gradient(120deg,#0d6efd,#0a58ca);">
+      <div class="small text-white-50">Volunteer Applications</div>
+      <div class="fs-3 fw-bold">{{ applications|length }}</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="dash-stat" style="background:linear-gradient(120deg,#fd7e14,#d96808);">
+      <div class="small text-white-50">Event Registrations</div>
+      <div class="fs-3 fw-bold">{{ registrations|length }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <strong>Recent Donations</strong>
+    <a href="{% url 'accounts:my_donations' %}" class="small">View all</a>
+  </div>
+  <div class="card-body p-0">
+    {% if donations %}
+      <table class="table mb-0">
+        <thead><tr><th>Date</th><th>Program</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for d in donations %}
+            <tr>
+              <td>{{ d.created|date:"d M Y" }}</td>
+              <td>{{ d.program|default:"General fund" }}</td>
+              <td>₹{{ d.amount }}</td>
+              <td><span class="badge badge-soft-{% if d.status == 'paid' %}success{% elif d.status == 'failed' %}danger{% else %}warning{% endif %}">{{ d.get_status_display }}</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="p-4 text-center text-muted">You haven't made any donations yet. <a href="{% url 'donations:donate' %}">Donate now</a>.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

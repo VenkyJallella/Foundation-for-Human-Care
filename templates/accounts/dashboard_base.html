@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="row g-4">
+      <!-- Sidebar -->
+      <div class="col-lg-3">
+        <div class="card shadow-sm p-3 dash-sidebar">
+          <div class="text-center mb-3">
+            {% if user.profile.photo %}
+              <img src="{{ user.profile.photo.url }}" class="rounded-circle mb-2" style="width:80px;height:80px;object-fit:cover;" alt="">
+            {% else %}
+              <i class="fas fa-user-circle text-success" style="font-size:4rem;"></i>
+            {% endif %}
+            <h6 class="mb-0 mt-2">{{ user.get_full_name|default:user.email }}</h6>
+            <small class="text-muted">{{ user.email }}</small>
+          </div>
+          {% with url_name=request.resolver_match.url_name %}
+          <div class="list-group list-group-flush">
+            <a href="{% url 'accounts:dashboard' %}" class="list-group-item list-group-item-action {% if url_name == 'dashboard' %}active{% endif %}"><i class="fas fa-gauge me-2"></i>Dashboard</a>
+            <a href="{% url 'accounts:my_donations' %}" class="list-group-item list-group-item-action {% if url_name == 'my_donations' %}active{% endif %}"><i class="fas fa-donate me-2"></i>My Donations</a>
+            <a href="{% url 'accounts:my_volunteering' %}" class="list-group-item list-group-item-action {% if url_name == 'my_volunteering' %}active{% endif %}"><i class="fas fa-people-carry-box me-2"></i>My Volunteering</a>
+            <a href="{% url 'accounts:my_events' %}" class="list-group-item list-group-item-action {% if url_name == 'my_events' %}active{% endif %}"><i class="fas fa-calendar-check me-2"></i>My Events</a>
+            <a href="{% url 'accounts:edit_profile' %}" class="list-group-item list-group-item-action {% if url_name == 'edit_profile' %}active{% endif %}"><i class="fas fa-user-pen me-2"></i>Edit Profile</a>
+          </div>
+          {% endwith %}
+        </div>
+      </div>
+      <!-- Main -->
+      <div class="col-lg-9">
+        {% block dashboard %}{% endblock %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

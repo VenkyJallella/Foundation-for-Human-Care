@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Programs — {{ org.org_name }}{% endblock %}
+{% block content %}
+{% include "partials/page_header.html" with title="Our Programs" subtitle="The causes we're working on" %}
+<section class="section">
+  <div class="container">
+    {% if programs %}
+      <div class="row g-4">
+        {% for program in programs %}
+          <div class="col-md-6 col-lg-4">
+            <div class="card hover-lift h-100 shadow-sm">
+              {% if program.image %}<img src="{{ program.image.url }}" class="card-img-top" alt="{{ program.title }}">
+              {% else %}<img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=700&q=80" class="card-img-top" alt="">{% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ program.title }}</h5>
+                <p class="card-text text-muted small">{{ program.summary }}</p>
+                {% if program.goal_amount %}
+                  <div class="progress goal-progress mb-2"><div class="progress-bar bg-success" style="width: {{ program.progress_percent }}%"></div></div>
+                  <small class="text-muted">₹{{ program.raised_amount }} of ₹{{ program.goal_amount }} ({{ program.progress_percent }}%)</small>
+                {% endif %}
+              </div>
+              <div class="card-footer bg-white border-0 d-flex gap-2">
+                <a href="{{ program.get_absolute_url }}" class="btn btn-sm btn-outline-success">Details</a>
+                <a href="{% url 'donations:donate' %}?program={{ program.slug }}" class="btn btn-sm btn-success">Donate</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-muted">No programs published yet. Check back soon!</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

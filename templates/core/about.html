@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}About Us — {{ org.org_name }}{% endblock %}
+
+{% block content %}
+{% include "partials/page_header.html" with title="About Us" subtitle=org.tagline %}
+
+<section class="section">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=900&q=80" class="img-fluid rounded-4 shadow-sm" alt="">
+      </div>
+      <div class="col-lg-6">
+        <h2 class="section-title">Our Story</h2>
+        <p class="text-muted" style="white-space: pre-line;">{{ org.about_long|default:"Foundation for Human Care was founded with a simple belief: that every human being deserves dignity, care, and the chance to thrive. From humble beginnings, we have grown into a community of staff, volunteers, and donors working together to make lasting change." }}</p>
+      </div>
+    </div>
+
+    <div class="row g-4 mt-4">
+      <div class="col-md-6">
+        <div class="card h-100 shadow-sm p-4">
+          <h4 class="text-success"><i class="fas fa-bullseye me-2"></i>Our Mission</h4>
+          <p class="text-muted mb-0" style="white-space: pre-line;">{{ org.mission|default:"To empower underserved communities through education, healthcare, and sustainable development." }}</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card h-100 shadow-sm p-4">
+          <h4 class="text-success"><i class="fas fa-eye me-2"></i>Our Vision</h4>
+          <p class="text-muted mb-0" style="white-space: pre-line;">{{ org.vision|default:"A world where every person has access to the resources and opportunities they need to live with dignity." }}</p>
+        </div>
+      </div>
+    </div>
+
+    {% if org.founder_name %}
+    <div class="row justify-content-center mt-5">
+      <div class="col-lg-10">
+        <h2 class="section-title text-center mb-4">Meet the Founder</h2>
+        <div class="card shadow-sm">
+          <div class="row g-0 align-items-center">
+            <div class="col-md-4 text-center p-4">
+              {% if org.founder_photo %}
+                <img src="{{ org.founder_photo.url }}" class="rounded-circle shadow-sm" style="width:170px;height:170px;object-fit:cover;" alt="{{ org.founder_name }}">
+              {% else %}
+                <i class="fas fa-user-circle text-success" style="font-size:9rem;"></i>
+              {% endif %}
+            </div>
+            <div class="col-md-8 p-4">
+              <h4 class="mb-1">{{ org.founder_name }}</h4>
+              {% if org.founder_role %}<p class="text-success fw-semibold mb-3">{{ org.founder_role }}</p>{% endif %}
+              <p class="text-muted mb-0" style="white-space: pre-line;">{{ org.founder_message|default:"Founder of Foundation for Human Care." }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

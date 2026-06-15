@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ org.org_name }} — {{ org.tagline }}{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero" {% if org.hero_image %}style="background-image: linear-gradient(rgba(20,40,30,.6), rgba(20,40,30,.6)), url('{{ org.hero_image.url }}');"{% else %}style="background-image: linear-gradient(rgba(20,40,30,.85), rgba(20,40,30,.85)), url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1600&q=80');"{% endif %}>
+  <div class="container">
+    <h1>{{ org.hero_title|default:"Together, we can change lives" }}</h1>
+    <p class="mt-3">{{ org.hero_subtitle|default:org.tagline|default:"Join us in building a more compassionate world — one act of kindness at a time." }}</p>
+    <div class="mt-4 d-flex flex-wrap gap-3">
+      <a href="{% url 'donations:donate' %}" class="btn btn-success btn-lg px-4"><i class="fas fa-heart me-2"></i>Donate Now</a>
+      <a href="{% url 'volunteers:list' %}" class="btn btn-outline-light btn-lg px-4">Become a Volunteer</a>
+    </div>
+  </div>
+</section>
+
+<!-- Impact stats (only shown once there is something to report) -->
+{% if org.stat_people_helped or org.stat_volunteers or org.stat_projects or org.stat_funds_raised %}
+<section class="section pb-0">
+  <div class="container">
+    <div class="row">
+      {% if org.stat_people_helped %}<div class="col-6 col-md-3"><div class="stat-box"><div class="num">{{ org.stat_people_helped }}+</div><div class="label">People Helped</div></div></div>{% endif %}
+      {% if org.stat_volunteers %}<div class="col-6 col-md-3"><div class="stat-box"><div class="num">{{ org.stat_volunteers }}+</div><div class="label">Volunteers</div></div></div>{% endif %}
+      {% if org.stat_projects %}<div class="col-6 col-md-3"><div class="stat-box"><div class="num">{{ org.stat_projects }}+</div><div class="label">Programs</div></div></div>{% endif %}
+      {% if org.stat_funds_raised %}<div class="col-6 col-md-3"><div class="stat-box"><div class="num">₹{{ org.stat_funds_raised }}+</div><div class="label">Funds Raised</div></div></div>{% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- About blurb -->
+<section class="section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=900&q=80" class="img-fluid rounded-4 shadow-sm" alt="Our work">
+      </div>
+      <div class="col-lg-6">
+        <h2 class="section-title">Who We Are</h2>
+        <p class="text-muted">{{ org.about_short|default:"Foundation for Human Care is a non-profit dedicated to uplifting underserved communities through education, healthcare, and emergency relief. We believe everyone deserves dignity and opportunity." }}</p>
+        <a href="{% url 'core:about' %}" class="btn btn-outline-success mt-2">Learn More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured programs -->
+{% if featured_programs %}
+<section class="section bg-light">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-title">Our Programs</h2>
+      <p class="section-sub">The causes we are working on right now</p>
+    </div>
+    <div class="row g-4">
+      {% for program in featured_programs %}
+        <div class="col-md-4">
+          <div class="card hover-lift h-100 shadow-sm">
+            {% if program.image %}<img src="{{ program.image.url }}" class="card-img-top" alt="{{ program.title }}">
+            {% else %}<img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=700&q=80" class="card-img-top" alt="">{% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ program.title }}</h5>
+              <p class="card-text text-muted small">{{ program.summary }}</p>
+              {% if program.goal_amount %}
+                <div class="progress goal-progress mb-2"><div class="progress-bar bg-success" style="width: {{ program.progress_percent }}%"></div></div>
+                <small class="text-muted">₹{{ program.raised_amount }} raised of ₹{{ program.goal_amount }}</small>
+              {% endif %}
+            </div>
+            <div class="card-footer bg-white border-0">
+              <a href="{{ program.get_absolute_url }}" class="btn btn-sm btn-outline-success">Read more</a>
+              <a href="{% url 'donations:donate' %}?program={{ program.slug }}" class="btn btn-sm btn-success">Donate</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4"><a href="{% url 'programs:list' %}" class="btn btn-outline-success">View All Programs</a></div>
+  </div>
+</section>
+{% endif %}
+
+<!-- CTA -->
+<section class="section text-center text-white" style="background: linear-gradient(120deg,#198754,#146c43);">
+  <div class="container">
+    <h2 class="fw-bold">Your support makes a difference</h2>
+    <p class="lead mb-4">Every contribution, big or small, helps us reach more people in need.</p>
+    <a href="{% url 'donations:donate' %}" class="btn btn-light btn-lg px-4 text-success fw-semibold"><i class="fas fa-heart me-2"></i>Donate Today</a>
+  </div>
+</section>
+
+<!-- Recent news -->
+{% if recent_posts %}
+<section class="section">
+  <div class="container">
+    <div class="text-center"><h2 class="section-title">Latest News</h2><p class="section-sub">Stories from the field</p></div>
+    <div class="row g-4">
+      {% for post in recent_posts %}
+        <div class="col-md-4">
+          <div class="card hover-lift h-100 shadow-sm">
+            {% if post.cover %}<img src="{{ post.cover.url }}" class="card-img-top" alt="">{% endif %}
+            <div class="card-body">
+              {% if post.category %}<span class="badge badge-soft-success mb-2">{{ post.category }}</span>{% endif %}
+              <h5 class="card-title">{{ post.title }}</h5>
+              <p class="card-text text-muted small">{{ post.excerpt }}</p>
+              <a href="{{ post.get_absolute_url }}" class="stretched-link text-success small">Read story →</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

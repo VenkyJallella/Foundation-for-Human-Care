@@ -1,0 +1,7 @@
+{% comment %}Usage: {% include "partials/page_header.html" with title="X" subtitle="Y" %}{% endcomment %}
+<header class="page-header">
+  <div class="container">
+    <h1>{{ title }}</h1>
+    {% if subtitle %}<p class="lead mb-0 text-white-50">{{ subtitle }}</p>{% endif %}
+  </div>
+</header>

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Thank you — {{ org.org_name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7 text-center">
+        {% if donation.status == 'paid' %}
+          <i class="fas fa-circle-check text-success" style="font-size:4rem;"></i>
+          <h2 class="mt-3">Thank you, {{ donation.name }}!</h2>
+          <p class="lead text-muted">Your donation of <strong>₹{{ donation.amount }}</strong> was successful.</p>
+          <p class="text-muted">Receipt no: <strong>{{ donation.receipt_no }}</strong></p>
+          <div class="mt-4 d-flex justify-content-center gap-2">
+            <a href="{% url 'donations:receipt' donation.pk %}" class="btn btn-success" target="_blank"><i class="fas fa-file-invoice me-2"></i>View Receipt</a>
+            {% if user.is_authenticated %}<a href="{% url 'accounts:my_donations' %}" class="btn btn-outline-success">My Donations</a>{% endif %}
+            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">Back Home</a>
+          </div>
+        {% else %}
+          <i class="fas fa-clock text-warning" style="font-size:4rem;"></i>
+          <h2 class="mt-3">Pledge recorded</h2>
+          <p class="lead text-muted">Thank you, {{ donation.name }}. We've recorded your pledge of <strong>₹{{ donation.amount }}</strong>.</p>
+          <p class="text-muted">Our team will reach out to you at {{ donation.email }} with payment details.</p>
+          <a href="{% url 'core:home' %}" class="btn btn-outline-secondary mt-3">Back Home</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

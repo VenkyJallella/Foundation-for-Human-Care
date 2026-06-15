@@ -1,0 +1,69 @@
+:root {
+  --fhc-green: #198754;
+  --fhc-green-dark: #146c43;
+  --fhc-dark: #1b2a34;
+}
+
+body {
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  color: #2b2b2b;
+}
+
+a { text-decoration: none; }
+
+.navbar-brand span { font-size: 1.05rem; }
+.nav-link { font-weight: 500; }
+
+/* Hero */
+.hero {
+  position: relative;
+  background: linear-gradient(rgba(20,40,30,.65), rgba(20,40,30,.65)), center/cover no-repeat;
+  color: #fff;
+  padding: 7rem 0;
+}
+.hero h1 { font-weight: 700; font-size: clamp(2rem, 5vw, 3.4rem); }
+.hero p { font-size: 1.2rem; max-width: 620px; }
+
+.page-header {
+  background: linear-gradient(120deg, var(--fhc-green), var(--fhc-green-dark));
+  color: #fff;
+  padding: 3.5rem 0;
+}
+.page-header h1 { font-weight: 700; }
+
+/* Cards */
+.card { border: none; border-radius: 1rem; overflow: hidden; transition: transform .2s, box-shadow .2s; }
+.card.hover-lift:hover { transform: translateY(-5px); box-shadow: 0 1rem 2rem rgba(0,0,0,.1); }
+.card-img-top { height: 210px; object-fit: cover; }
+
+/* Stats */
+.stat-box { text-align: center; padding: 1.5rem; }
+.stat-box .num { font-size: 2.4rem; font-weight: 700; color: var(--fhc-green); }
+.stat-box .label { color: #6c757d; font-weight: 500; }
+
+/* Section spacing */
+.section { padding: 4.5rem 0; }
+.section-title { font-weight: 700; margin-bottom: .5rem; }
+.section-sub { color: #6c757d; margin-bottom: 2.5rem; }
+
+/* Progress bar for program goal */
+.goal-progress { height: 10px; border-radius: 6px; }
+
+/* Gallery */
+.gallery-thumb { height: 220px; object-fit: cover; width: 100%; border-radius: .75rem; cursor: pointer; }
+.album-cover { height: 240px; object-fit: cover; width: 100%; }
+
+/* Footer */
+.footer-dark { background: var(--fhc-dark); }
+.footer-links a { color: rgba(255,255,255,.65); display: block; padding: .25rem 0; }
+.footer-links a:hover { color: #fff; }
+
+/* Dashboard */
+.dash-sidebar .list-group-item.active { background: var(--fhc-green); border-color: var(--fhc-green); }
+.dash-stat { border-radius: 1rem; padding: 1.5rem; color: #fff; }
+
+.badge-soft-success { background: #d1e7dd; color: #0f5132; }
+.badge-soft-warning { background: #fff3cd; color: #664d03; }
+.badge-soft-danger { background: #f8d7da; color: #842029; }
+
+footer .form-control { border: none; }

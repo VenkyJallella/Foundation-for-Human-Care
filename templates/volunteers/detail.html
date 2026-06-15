@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}{{ opportunity.title }} — {{ org.org_name }}{% endblock %}
+{% block content %}
+{% include "partials/page_header.html" with title=opportunity.title subtitle=opportunity.location %}
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-7">
+        <a href="{% url 'volunteers:list' %}" class="btn btn-sm btn-outline-secondary mb-4"><i class="fas fa-arrow-left me-1"></i>All opportunities</a>
+        <div style="white-space: pre-line;">{{ opportunity.description }}</div>
+        {% if opportunity.skill_list %}
+          <h6 class="mt-4">Skills</h6>
+          {% for skill in opportunity.skill_list %}<span class="badge badge-soft-success me-1">{{ skill }}</span>{% endfor %}
+        {% endif %}
+      </div>
+      <div class="col-lg-5">
+        <div class="card shadow-sm p-4">
+          <h5 class="mb-3">Apply to volunteer</h5>
+          {% if already_applied %}
+            <div class="alert alert-success"><i class="fas fa-check-circle me-1"></i>You've already applied. Track its status in <a href="{% url 'accounts:my_volunteering' %}">your dashboard</a>.</div>
+          {% elif user.is_authenticated %}
+            <form method="post">
+              {% csrf_token %}
+              {{ form|crispy }}
+              <button class="btn btn-success w-100"><i class="fas fa-paper-plane me-2"></i>Submit Application</button>
+            </form>
+          {% else %}
+            <p class="text-muted">Please log in or register to apply.</p>
+            <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-success w-100">Login to apply</a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-outline-success w-100 mt-2">Register</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

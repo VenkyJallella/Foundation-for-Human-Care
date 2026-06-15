@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }} — {{ org.org_name }}{% endblock %}
+{% block content %}
+{% include "partials/page_header.html" with title=event.title subtitle=event.location %}
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        {% if event.image %}<img src="{{ event.image.url }}" class="img-fluid rounded-4 shadow-sm mb-4" alt="">{% endif %}
+        <div style="white-space: pre-line;">{{ event.description }}</div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card shadow-sm p-4">
+          <ul class="list-unstyled mb-3">
+            <li class="mb-2"><i class="far fa-calendar text-success me-2"></i>{{ event.start|date:"d M Y, g:i A" }}</li>
+            {% if event.end %}<li class="mb-2"><i class="far fa-clock text-success me-2"></i>Ends {{ event.end|date:"d M Y, g:i A" }}</li>{% endif %}
+            {% if event.location %}<li class="mb-2"><i class="fas fa-location-dot text-success me-2"></i>{{ event.location }}</li>{% endif %}
+            {% if event.capacity %}<li class="mb-2"><i class="fas fa-users text-success me-2"></i>{{ event.seats_taken }} / {{ event.capacity }} registered</li>{% endif %}
+          </ul>
+
+          {% if event.is_past %}
+            <button class="btn btn-secondary w-100" disabled>Event has ended</button>
+          {% elif is_registered %}
+            <div class="alert alert-success small mb-2"><i class="fas fa-check-circle me-1"></i>You're registered!</div>
+            <form method="post" action="{% url 'events:cancel' event.slug %}">
+              {% csrf_token %}
+              <button class="btn btn-outline-danger w-100">Cancel registration</button>
+            </form>
+          {% elif event.is_full %}
+            <button class="btn btn-secondary w-100" disabled>Event is full</button>
+          {% elif user.is_authenticated %}
+            <form method="post" action="{% url 'events:register' event.slug %}">
+              {% csrf_token %}
+              <button class="btn btn-success w-100"><i class="fas fa-ticket me-2"></i>Register</button>
+            </form>
+          {% else %}
+            <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-success w-100">Login to register</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
