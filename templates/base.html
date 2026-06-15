@@ -4,8 +4,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#198754">
+  <script>document.documentElement.classList.add('js');</script>
+
   <title>{% block title %}{{ org.org_name }}{% endblock %}</title>
-  <meta name="description" content="{{ org.tagline }}">
+  <meta name="description" content="{% block meta_description %}{{ org.tagline }}{% endblock %}">
+  <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+
+  <!-- Open Graph (Facebook, WhatsApp, LinkedIn previews) -->
+  <meta property="og:site_name" content="{{ org.org_name }}">
+  <meta property="og:title" content="{% block og_title %}{{ org.org_name }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ org.tagline }}{% endblock %}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  <meta property="og:image" content="{% block og_image %}{% if org.hero_image %}{{ request.scheme }}://{{ request.get_host }}{{ org.hero_image.url }}{% endif %}{% endblock %}">
+  <meta name="twitter:card" content="summary_large_image">
+
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14' font-size='14'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
 
   <!-- Bootstrap 5 -->
@@ -16,6 +30,28 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="{% static 'css/main.css' %}" rel="stylesheet">
+
+  <!-- Structured data: tells Google this is a non-profit organisation -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NGO",
+    "name": "{{ org.org_name|escapejs }}",
+    "url": "{{ request.scheme }}://{{ request.get_host }}/",
+    "description": "{{ org.tagline|escapejs }}",
+    {% if org.hero_image %}"logo": "{{ request.scheme }}://{{ request.get_host }}{{ org.hero_image.url }}",{% endif %}
+    {% if org.email %}"email": "{{ org.email|escapejs }}",{% endif %}
+    {% if org.phone %}"telephone": "{{ org.phone|escapejs }}",{% endif %}
+    "address": "{{ org.address|escapejs }}",
+    "sameAs": [
+      {% if org.facebook %}"{{ org.facebook }}"{% if org.instagram or org.twitter or org.youtube %},{% endif %}{% endif %}
+      {% if org.instagram %}"{{ org.instagram }}"{% if org.twitter or org.youtube %},{% endif %}{% endif %}
+      {% if org.twitter %}"{{ org.twitter }}"{% if org.youtube %},{% endif %}{% endif %}
+      {% if org.youtube %}"{{ org.youtube }}"{% endif %}
+    ]
+  }
+  </script>
+
   {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -38,7 +74,32 @@
 
   {% include "partials/footer.html" %}
 
+  <!-- Floating WhatsApp contact button -->
+  {% if org.whatsapp_number %}
+    <a href="https://wa.me/{{ org.whatsapp_number }}" target="_blank" rel="noopener"
+       class="float-whatsapp" aria-label="Chat on WhatsApp" title="Chat with us on WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+  {% endif %}
+
+  <!-- Back to top -->
+  <button id="backToTop" class="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Back-to-top button
+    const backBtn = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backBtn.classList.toggle('show', window.scrollY > 400);
+    });
+    backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Reveal-on-scroll animation
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>

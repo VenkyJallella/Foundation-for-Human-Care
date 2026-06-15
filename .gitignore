@@ -18,6 +18,10 @@ db.sqlite3-journal
 # Data dumps (may contain personal data / password hashes)
 data.json
 
+# Local working documents (expense reports etc.)
+/reports/
+gen_secret_key.py
+
 # OS / editor
 .DS_Store
 Thumbs.db

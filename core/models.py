@@ -1,4 +1,5 @@
-from django.core.exceptions import ValidationError
+import re
+
 from django.db import models
 
 
@@ -78,6 +79,11 @@ class SiteSetting(models.Model):
     def load(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+    @property
+    def whatsapp_number(self):
+        """Digits-only phone (incl. country code) for wa.me links; '' if unset."""
+        return re.sub(r"\D", "", self.phone or "")
 
 
 class NewsletterSubscriber(models.Model):

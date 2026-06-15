@@ -67,3 +67,37 @@ a { text-decoration: none; }
 .badge-soft-danger { background: #f8d7da; color: #842029; }
 
 footer .form-control { border: none; }
+
+/* Smooth anchor scrolling */
+html { scroll-behavior: smooth; }
+
+/* Floating WhatsApp button */
+.float-whatsapp {
+  position: fixed; bottom: 24px; right: 24px; z-index: 1030;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25d366; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.7rem; box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  transition: transform .2s;
+}
+.float-whatsapp:hover { color: #fff; transform: scale(1.1); }
+
+/* Back-to-top button */
+.back-to-top {
+  position: fixed; bottom: 24px; left: 24px; z-index: 1030;
+  width: 46px; height: 46px; border-radius: 50%;
+  border: none; background: var(--fhc-green); color: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,.2);
+  opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s, transform .2s;
+}
+.back-to-top.show { opacity: 1; visibility: visible; }
+.back-to-top:hover { transform: translateY(-3px); }
+
+/* Reveal-on-scroll animation (only hides when JS is active, so no-JS users still see content) */
+.reveal { transition: opacity .6s ease, transform .6s ease; }
+.js .reveal { opacity: 0; transform: translateY(24px); }
+.reveal.revealed { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}

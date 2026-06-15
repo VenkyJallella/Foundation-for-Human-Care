@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}{{ org.org_name }} — {{ org.tagline }}{% endblock %}
+{% block meta_description %}{{ org.about_short|default:org.tagline }}{% endblock %}
+{% block og_description %}{{ org.about_short|default:org.tagline }}{% endblock %}
 
 {% block content %}
 <!-- Hero -->
@@ -32,7 +34,7 @@
 <!-- About blurb -->
 <section class="section">
   <div class="container">
-    <div class="row align-items-center g-5">
+    <div class="row align-items-center g-5 reveal">
       <div class="col-lg-6">
         <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=900&q=80" class="img-fluid rounded-4 shadow-sm" alt="Our work">
       </div>
@@ -53,7 +55,7 @@
       <h2 class="section-title">Our Programs</h2>
       <p class="section-sub">The causes we are working on right now</p>
     </div>
-    <div class="row g-4">
+    <div class="row g-4 reveal">
       {% for program in featured_programs %}
         <div class="col-md-4">
           <div class="card hover-lift h-100 shadow-sm">
@@ -76,6 +78,31 @@
       {% endfor %}
     </div>
     <div class="text-center mt-4"><a href="{% url 'programs:list' %}" class="btn btn-outline-success">View All Programs</a></div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Upcoming events -->
+{% if upcoming_events %}
+<section class="section">
+  <div class="container">
+    <div class="text-center"><h2 class="section-title">Upcoming Events</h2><p class="section-sub">Come, be part of the change</p></div>
+    <div class="row g-4">
+      {% for event in upcoming_events %}
+        <div class="col-md-4">
+          <div class="card hover-lift h-100 shadow-sm">
+            {% if event.image %}<img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.title }}">{% endif %}
+            <div class="card-body">
+              <div class="text-success small fw-semibold mb-1"><i class="far fa-calendar me-1"></i>{{ event.start|date:"d M Y, g:i A" }}</div>
+              <h5 class="card-title">{{ event.title }}</h5>
+              {% if event.location %}<p class="small text-muted mb-2"><i class="fas fa-location-dot me-1"></i>{{ event.location }}</p>{% endif %}
+              <a href="{{ event.get_absolute_url }}" class="btn btn-sm btn-success">View & Register</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4"><a href="{% url 'events:list' %}" class="btn btn-outline-success">All Events</a></div>
   </div>
 </section>
 {% endif %}
