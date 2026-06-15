@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ContactMessage, NewsletterSubscriber, SiteSetting
+from .models import ContactMessage, Document, NewsletterSubscriber, SiteSetting
 
 
 @admin.register(SiteSetting)
@@ -12,6 +12,15 @@ class SiteSettingAdmin(admin.ModelAdmin):
         ("Impact stats", {"fields": ("stat_people_helped", "stat_volunteers", "stat_projects", "stat_funds_raised")}),
         ("Contact", {"fields": ("email", "phone", "address", "bank_details")}),
         ("Social links", {"fields": ("facebook", "instagram", "twitter", "youtube")}),
+        ("Legal & registration", {
+            "fields": ("legal_name", "pan_number", "registration_number", "reg_12a_number", "reg_80g_number"),
+            "description": "Shown on donation receipts and policy pages once filled in.",
+        }),
+        ("Policy pages", {
+            "fields": ("privacy_policy", "terms_conditions", "refund_policy"),
+            "description": "Leave blank to show built-in starter text; edit to customise.",
+            "classes": ("collapse",),
+        }),
     )
 
     def has_add_permission(self, request):
@@ -20,6 +29,14 @@ class SiteSettingAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(Document)
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = ("title", "category", "is_published", "uploaded")
+    list_filter = ("category", "is_published")
+    search_fields = ("title", "description")
+    list_editable = ("is_published",)
 
 
 @admin.register(NewsletterSubscriber)

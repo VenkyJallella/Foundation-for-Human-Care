@@ -27,6 +27,76 @@ def about(request):
     return render(request, "core/about.html")
 
 
+def _legal_page(request, title, custom_text, default_text):
+    return render(
+        request,
+        "core/legal_page.html",
+        {"page_title": title, "body": custom_text.strip() or default_text},
+    )
+
+
+def privacy(request):
+    from .models import SiteSetting
+
+    org = SiteSetting.load()
+    default = (
+        f"{org.org_name} respects your privacy. We collect only the information you "
+        "provide (such as name, email and phone) when you donate, register, volunteer "
+        "or contact us, and we use it solely to carry out our charitable work and to "
+        "communicate with you.\n\n"
+        "We do not sell or rent your personal information to anyone. Online payments "
+        "are processed securely by our payment partner (Razorpay); we do not store "
+        "your card or bank details on our servers.\n\n"
+        "You may request access to, correction of, or deletion of your personal data "
+        f"at any time by contacting us at {org.email or 'our contact email'}."
+    )
+    return _legal_page(request, "Privacy Policy", org.privacy_policy, default)
+
+
+def terms(request):
+    from .models import SiteSetting
+
+    org = SiteSetting.load()
+    default = (
+        f"By using the {org.org_name} website you agree to these terms.\n\n"
+        "The content on this site is provided for information about our charitable "
+        "activities. Donations made through this site are voluntary contributions to "
+        f"support the work of {org.org_name} and are used at the organisation's "
+        "discretion towards its charitable objectives.\n\n"
+        "We make every effort to keep information accurate and up to date, but we make "
+        "no warranties as to its completeness. We reserve the right to update these "
+        "terms at any time."
+    )
+    return _legal_page(request, "Terms & Conditions", org.terms_conditions, default)
+
+
+def refund(request):
+    from .models import SiteSetting
+
+    org = SiteSetting.load()
+    default = (
+        "Donations are voluntary contributions and are generally non-refundable.\n\n"
+        "If you believe a donation was made in error, or you were charged incorrectly "
+        "(for example a duplicate transaction), please contact us within 7 days at "
+        f"{org.email or 'our contact email'} with the transaction details. Genuine "
+        "erroneous or duplicate payments will be reviewed and, where appropriate, "
+        "refunded to the original payment method within 5–7 working days.\n\n"
+        "Once a donation receipt has been issued for tax purposes, a refund may not be "
+        "possible."
+    )
+    return _legal_page(request, "Refund & Cancellation Policy", org.refund_policy, default)
+
+
+def documents(request):
+    from .models import Document
+
+    docs = Document.objects.filter(is_published=True)
+    grouped = {}
+    for doc in docs:
+        grouped.setdefault(doc.get_category_display(), []).append(doc)
+    return render(request, "core/documents.html", {"grouped_documents": grouped})
+
+
 def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)

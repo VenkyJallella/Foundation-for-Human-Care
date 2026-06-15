@@ -42,6 +42,24 @@ class SiteSetting(models.Model):
     # Bank / UPI details (shown as a fallback giving option)
     bank_details = models.TextField(blank=True)
 
+    # Legal / registration (shown on receipts & policy pages when filled in)
+    legal_name = models.CharField(
+        max_length=200, blank=True,
+        help_text="Registered legal name, if different from the display name.",
+    )
+    pan_number = models.CharField("PAN", max_length=20, blank=True)
+    registration_number = models.CharField(
+        max_length=80, blank=True,
+        help_text="Trust / Society / Section 8 registration number.",
+    )
+    reg_12a_number = models.CharField("12A registration no.", max_length=80, blank=True)
+    reg_80g_number = models.CharField("80G registration no.", max_length=80, blank=True)
+
+    # Policy pages (admin-editable; sensible defaults shown if left blank)
+    privacy_policy = models.TextField(blank=True)
+    terms_conditions = models.TextField(blank=True)
+    refund_policy = models.TextField(blank=True)
+
     class Meta:
         verbose_name = "Site setting"
         verbose_name_plural = "Site settings"
@@ -83,3 +101,29 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.name} — {self.subject or 'No subject'}"
+
+
+class Document(models.Model):
+    """Public transparency documents — annual reports, certificates, etc."""
+
+    class Category(models.TextChoices):
+        ANNUAL_REPORT = "annual_report", "Annual Report"
+        FINANCIAL = "financial", "Financial Statement"
+        CERTIFICATE = "certificate", "Registration / Certificate"
+        POLICY = "policy", "Policy"
+        OTHER = "other", "Other"
+
+    title = models.CharField(max_length=200)
+    category = models.CharField(
+        max_length=20, choices=Category.choices, default=Category.OTHER
+    )
+    file = models.FileField(upload_to="documents/")
+    description = models.CharField(max_length=255, blank=True)
+    is_published = models.BooleanField(default=True)
+    uploaded = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("category", "-uploaded")
+
+    def __str__(self):
+        return self.title

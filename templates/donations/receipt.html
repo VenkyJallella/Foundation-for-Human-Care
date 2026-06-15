@@ -47,6 +47,18 @@
             <span class="badge badge-soft-{% if donation.status == 'paid' %}success{% else %}warning{% endif %} fs-6">{{ donation.get_status_display }}</span>
             {% if donation.razorpay_payment_id %}<small class="text-muted">Txn: {{ donation.razorpay_payment_id }}</small>{% endif %}
           </div>
+          {% if org.pan_number or org.reg_80g_number or org.registration_number %}
+            <hr>
+            <div class="small text-muted">
+              {% if org.legal_name %}<div><strong>{{ org.legal_name }}</strong></div>{% endif %}
+              {% if org.registration_number %}<div>Registration No: {{ org.registration_number }}</div>{% endif %}
+              {% if org.pan_number %}<div>PAN: {{ org.pan_number }}</div>{% endif %}
+              {% if org.reg_80g_number %}
+                <div>80G Registration No: {{ org.reg_80g_number }}</div>
+                <div class="mt-2 fst-italic">Donations to {{ org.org_name }} are eligible for tax deduction under Section 80G of the Income Tax Act.</div>
+              {% endif %}
+            </div>
+          {% endif %}
           <hr>
           <p class="text-center text-muted small mb-0">Thank you for supporting {{ org.org_name }}. This receipt acknowledges your generous contribution.</p>
         </div>

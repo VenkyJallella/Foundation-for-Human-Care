@@ -9,4 +9,8 @@ urlpatterns = [
     path("about/", views.about, name="about"),
     path("contact/", views.contact, name="contact"),
     path("newsletter/subscribe/", views.newsletter_subscribe, name="newsletter_subscribe"),
+    path("privacy/", views.privacy, name="privacy"),
+    path("terms/", views.terms, name="terms"),
+    path("refund/", views.refund, name="refund"),
+    path("documents/", views.documents, name="documents"),
 ]
