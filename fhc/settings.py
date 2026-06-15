@@ -139,7 +139,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 _staticfiles_backend = (
     "django.contrib.staticfiles.storage.StaticFilesStorage"
     if DEBUG
-    else "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    else "fhc.storage.ForgivingCompressedManifestStaticFilesStorage"
 )
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
