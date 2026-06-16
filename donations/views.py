@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.conf import settings
 from django.contrib import messages
@@ -13,6 +14,8 @@ from programs.models import Program
 from .forms import DonationForm
 from .models import Donation
 from . import services
+
+logger = logging.getLogger(__name__)
 
 
 def donate(request):
@@ -37,14 +40,19 @@ def donate(request):
             donation.status = Donation.Status.CREATED
             donation.save()
 
-            order = services.create_order(
-                donation.amount_paise,
-                receipt=f"don_{donation.pk}",
-                notes={"donation_id": str(donation.pk), "email": donation.email},
-            )
+            try:
+                order = services.create_order(
+                    donation.amount_paise,
+                    receipt=f"don_{donation.pk}",
+                    notes={"donation_id": str(donation.pk), "email": donation.email},
+                )
+            except Exception:
+                # Razorpay API/network error — don't 500; fall back to a pledge.
+                logger.exception("Razorpay order creation failed for donation %s", donation.pk)
+                order = None
 
             if order is None:
-                # Razorpay not configured — fall back to a manual/pledge flow.
+                # Razorpay not configured (or errored) — fall back to a pledge flow.
                 messages.warning(
                     request,
                     "Online payments are not configured yet. Your pledge has been "

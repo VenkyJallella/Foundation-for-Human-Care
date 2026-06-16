@@ -40,6 +40,10 @@ class Profile(models.Model):
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_user_profile(sender, instance, created, raw=False, **kwargs):
+    # `raw` is True during loaddata, where the Profile is loaded from the
+    # fixture itself — creating one here would clash with that.
+    if raw:
+        return
     if created:
         Profile.objects.get_or_create(user=instance)

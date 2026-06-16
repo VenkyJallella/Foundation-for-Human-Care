@@ -39,19 +39,27 @@ def register(request, slug):
         messages.error(request, "This event has already taken place.")
         return redirect(event.get_absolute_url())
 
-    reg, created = EventRegistration.objects.get_or_create(
+    existing = EventRegistration.objects.filter(
         event=event, user=request.user
-    )
-    if not created and reg.status == EventRegistration.Status.REGISTERED:
+    ).first()
+    if existing and existing.status == EventRegistration.Status.REGISTERED:
         messages.info(request, "You're already registered for this event.")
         return redirect(event.get_absolute_url())
 
+    # Check capacity BEFORE creating the registration row.
     if event.is_full:
         messages.error(request, "Sorry, this event is full.")
         return redirect(event.get_absolute_url())
 
-    reg.status = EventRegistration.Status.REGISTERED
-    reg.save()
+    if existing:  # re-registering after a previous cancellation
+        existing.status = EventRegistration.Status.REGISTERED
+        existing.save()
+    else:
+        EventRegistration.objects.create(
+            event=event,
+            user=request.user,
+            status=EventRegistration.Status.REGISTERED,
+        )
     messages.success(request, f"You're registered for {event.title}!")
     return redirect(event.get_absolute_url())
 

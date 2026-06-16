@@ -52,7 +52,8 @@ class Event(models.Model):
 
     @property
     def seats_taken(self):
-        return self.registrations.count()
+        # Only active registrations count toward capacity (not cancelled ones).
+        return self.registrations.filter(status="registered").count()
 
     @property
     def is_full(self):
